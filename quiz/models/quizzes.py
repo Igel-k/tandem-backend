@@ -22,7 +22,6 @@ class Quiz(models.Model):
 
 class CodeCompletionQuestion(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='code_completion_questions', verbose_name='Quiz')
-    order = models.PositiveSmallIntegerField(verbose_name='Quiz number')
     
     code = models.TextField(verbose_name='Code')
     blanks = models.CharField(max_length=100, verbose_name='Blanks')
@@ -35,7 +34,7 @@ class CodeCompletionQuestion(models.Model):
     class Meta:
         verbose_name = 'Question Code Completion'
         verbose_name_plural = 'Questions Code Completion'
-        ordering = ['order']
+        ordering = ['id']
         db_table = 'quiz"."code_completion_question'
 
     def __str__(self):
@@ -44,7 +43,6 @@ class CodeCompletionQuestion(models.Model):
 
 class AsyncSorterQuestion(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='async_sorter_questions', verbose_name='Quiz')
-    order = models.PositiveSmallIntegerField(verbose_name='Quiz Number')
     
     code = models.TextField(verbose_name='Code')
     blocks = models.JSONField(default=list, verbose_name='Blocks')
@@ -54,7 +52,7 @@ class AsyncSorterQuestion(models.Model):
     class Meta:
         verbose_name = 'Question Async Sorter'
         verbose_name_plural = 'Questions Async Sorter'
-        ordering = ['order']
+        ordering = ['id']
         db_table = 'quiz"."async_sorter_question'
 
     def __str__(self):

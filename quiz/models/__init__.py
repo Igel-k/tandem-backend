@@ -1,1 +1,1 @@
-from .core import Section, Difficulty, Tag
+from .core import Section, Difficulty, Tag, QuizType

@@ -8,6 +8,9 @@ class Quiz(models.Model):
     
     title_ru = models.CharField(max_length=200, verbose_name='Title (RU)')
     title_en = models.CharField(max_length=200, verbose_name='Title (EN)')
+
+    description_ru = models.TextField(verbose_name='Description (RU)')
+    description_en = models.TextField(verbose_name='Description (EN)')
     
     tags = models.ManyToManyField(Tag, related_name='quizzes', verbose_name='Tags', blank=True)
 

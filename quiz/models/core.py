@@ -34,3 +34,15 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+class QuizType(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name='Quiz title')
+    description = models.CharField(max_length=100, null=True, blank=True, verbose_name='Description')
+
+    class Meta:
+        verbose_name = 'Quiz Type'
+        verbose_name_plural = 'Quiz Types'
+        db_table = 'quiz"."quiz_type'
+
+    def __str__(self):
+        return self.name

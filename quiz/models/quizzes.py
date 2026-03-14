@@ -5,6 +5,7 @@ class Quiz(models.Model):
     quiz_type = models.ForeignKey(QuizType, on_delete=models.PROTECT, related_name='quizzes', verbose_name='Quiz type')
     difficulty = models.ForeignKey(Difficulty, on_delete=models.PROTECT, related_name='quizzes', verbose_name='Difficulty')
     section = models.ForeignKey(Section, on_delete=models.PROTECT, related_name='quizzes', verbose_name='Section')
+    time_limit = models.PositiveIntegerField(null=True, blank=True, verbose_name='Time limit')
     
     title_ru = models.CharField(max_length=200, verbose_name='Title (RU)')
     title_en = models.CharField(max_length=200, verbose_name='Title (EN)')

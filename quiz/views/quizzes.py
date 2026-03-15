@@ -12,7 +12,7 @@ class QuizListView(generics.ListAPIView):
     queryset = Quiz.objects.all().order_by('id')
     serializer_class = QuizListSerializer
     permission_classes = [] 
-    pagination_class QuizListPagination
+    pagination_class = QuizListPagination
 
 class QuizDetailView(generics.RetrieveAPIView):
     queryset = Quiz.objects.all()

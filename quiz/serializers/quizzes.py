@@ -54,7 +54,7 @@ class QuizDetailSerializer(QuizListSerializer):
         fields = QuizListSerializer.Meta.fields + ('questions',)
 
     def get_questions(self, obj):
-        quiz_type_name = obj.quiz_type.name
+        quiz_type_name = obj.quiz_type.name.strip().lower().replace("_", " ")
         
         if quiz_type_name == 'code completion':
             questions = obj.code_completion_questions.all()

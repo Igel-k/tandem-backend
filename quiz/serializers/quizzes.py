@@ -1,5 +1,3 @@
-# quiz/serializers/quizzes.py
-
 from rest_framework import serializers
 from quiz.models.quizzes import Quiz, CodeCompletionQuestion, AsyncSorterQuestion
 
@@ -31,16 +29,23 @@ class QuizListSerializer(serializers.ModelSerializer):
     section = serializers.CharField(source='section.name')
     
     title = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
 
     class Meta:
         model = Quiz
-        fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'tags')
+        fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'description', 'tags')
 
     def get_title(self, obj):
         return {
             'ru': obj.title_ru,
             'en': obj.title_en
+        }
+
+    def get_description(self, obj):
+        return {
+            'ru': obj.description_ru,
+            'en': obj.description_en
         }
 
     def get_tags(self, obj):
@@ -51,7 +56,7 @@ class QuizDetailSerializer(QuizListSerializer):
     questions = serializers.SerializerMethodField()
 
     class Meta(QuizListSerializer.Meta):
-        fields = QuizListSerializer.Meta.fields + ('questions',)
+        fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'tags', 'questions')
 
     def get_questions(self, obj):
         quiz_type_name = obj.quiz_type.name.strip().lower().replace("_", " ")

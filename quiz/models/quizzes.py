@@ -61,3 +61,40 @@ class AsyncSorterQuestion(models.Model):
 
     def __str__(self):
         return f"Вопрос {self.order} для квиза {self.quiz.id}"
+
+
+class SingleChoiceQuestion(models.Model):
+    ANSWER_CHOICES = (
+        ('a', 'a'),
+        ('b', 'b'),
+        ('c', 'c'),
+        ('d', 'd'),
+    )
+
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='single_choice_questions', verbose_name='Quiz')
+    
+    text_ru = models.TextField(verbose_name='Title (RU)')
+    text_en = models.TextField(verbose_name='Title (EN)')
+
+    option_a_ru = models.CharField(max_length=255, verbose_name='Option A (RU)')
+    option_a_en = models.CharField(max_length=255, verbose_name='Option A (EN)')
+    
+    option_b_ru = models.CharField(max_length=255, verbose_name='Option B (RU)')
+    option_b_en = models.CharField(max_length=255, verbose_name='Option B (EN)')
+    
+    option_c_ru = models.CharField(max_length=255, verbose_name='Option C (RU)')
+    option_c_en = models.CharField(max_length=255, verbose_name='Option C (EN)')
+    
+    option_d_ru = models.CharField(max_length=255, verbose_name='Option D (RU)')
+    option_d_en = models.CharField(max_length=255, verbose_name='Option D (EN)')
+
+    correct_answer = models.CharField(max_length=1, choices=ANSWER_CHOICES, verbose_name='Correct answer')
+
+    class Meta:
+        verbose_name = 'Question Single Choice'
+        verbose_name_plural = 'Questions Single Choice'
+        ordering = ['id']
+        db_table = 'quiz"."single_choice_question'
+
+    def __str__(self):
+        return f"Вопрос {self.id} для квиза {self.quiz.id}"

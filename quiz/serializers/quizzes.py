@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from quiz.models.quizzes import Quiz, CodeCompletionQuestion, AsyncSorterQuestion
+from quiz.models.quizzes import Quiz, CodeCompletionQuestion, AsyncSorterQuestion, SingleChoiceQuestion
 
 class CodeCompletionQuestionSerializer(serializers.ModelSerializer):
     hint = serializers.SerializerMethodField()
@@ -52,6 +52,53 @@ class QuizListSerializer(serializers.ModelSerializer):
         return [tag.name for tag in obj.tags.all()]
 
 
+class SingleChoiceQuestionSerializer(serializers.ModelSerializer):
+    text = serializers.SerializerMethodField()
+    options = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SingleChoiceQuestion
+        fields = ('id', 'text', 'options')
+
+    def get_text(self, obj):
+        return {
+            'ru': obj.text_ru,
+            'en': obj.text_en
+        }
+
+    def get_options(self, obj):
+        return [
+            {
+                "id": "a",
+                "text": {
+                    "ru": obj.option_a_ru,
+                    "en": obj.option_a_en
+                }
+            },
+            {
+                "id": "b",
+                "text": {
+                    "ru": obj.option_b_ru,
+                    "en": obj.option_b_en
+                }
+            },
+            {
+                "id": "c",
+                "text": {
+                    "ru": obj.option_c_ru,
+                    "en": obj.option_c_en
+                }
+            },
+            {
+                "id": "d",
+                "text": {
+                    "ru": obj.option_d_ru,
+                    "en": obj.option_d_en
+                }
+            }
+        ]
+
+
 class QuizDetailSerializer(QuizListSerializer):
     questions = serializers.SerializerMethodField()
 
@@ -68,5 +115,9 @@ class QuizDetailSerializer(QuizListSerializer):
         elif quiz_type_name == 'async sorter':
             questions = obj.async_sorter_questions.all()
             return AsyncSorterQuestionSerializer(questions, many=True).data
+
+        elif quiz_type_name == 'single choice':
+            questions = obj.single_choice_questions.all()
+            return SingleChoiceQuestionSerializer(questions, many=True).data
             
         return []

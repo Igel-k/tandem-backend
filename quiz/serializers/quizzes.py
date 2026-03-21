@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from quiz.models.quizzes import Quiz, CodeCompletionQuestion, AsyncSorterQuestion, SingleChoiceQuestion
+from quiz.models.quizzes import Quiz, CodeCompletionQuestion, AsyncSorterQuestion, SingleChoiceQuestion, TrueFalseQuestion 
 
 class CodeCompletionQuestionSerializer(serializers.ModelSerializer):
     hint = serializers.SerializerMethodField()
@@ -99,6 +99,29 @@ class SingleChoiceQuestionSerializer(serializers.ModelSerializer):
         ]
 
 
+class TrueFalseQuestionSerializer(serializers.ModelSerializer):
+    statement = serializers.SerializerMethodField()
+    explanation = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TrueFalseQuestion
+        fields = ('id', 'statement', 'explanation')
+
+    def get_statement(self, obj):
+        return {
+            'ru': obj.statement_ru,
+            'en': obj.statement_en
+        }
+
+    def get_explanation(self, obj):
+        if not obj.explanation_ru and not obj.explanation_en:
+            return None
+        return {
+            'ru': obj.explanation_ru or "",
+            'en': obj.explanation_en or ""
+        }
+
+
 class QuizDetailSerializer(QuizListSerializer):
     questions = serializers.SerializerMethodField()
 
@@ -119,5 +142,9 @@ class QuizDetailSerializer(QuizListSerializer):
         elif quiz_type_name == 'single choice':
             questions = obj.single_choice_questions.all()
             return SingleChoiceQuestionSerializer(questions, many=True).data
+            
+        elif quiz_type_name == 'true false':
+            questions = obj.true_false_questions.all()
+            return TrueFalseQuestionSerializer(questions, many=True).data
             
         return []

@@ -98,3 +98,24 @@ class SingleChoiceQuestion(models.Model):
 
     def __str__(self):
         return f"Вопрос {self.id} для квиза {self.quiz.id}"
+
+
+class TrueFalseQuestion(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='true_false_questions', verbose_name='Quiz')
+    
+    statement_ru = models.TextField(verbose_name='Statement (RU)')
+    statement_en = models.TextField(verbose_name='Statement (EN)')
+    
+    correct_answer = models.BooleanField(verbose_name='Correct answer')
+    
+    explanation_ru = models.TextField(verbose_name='Explanation (RU)', blank=True, null=True)
+    explanation_en = models.TextField(verbose_name='Explanation (EN)', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Question True/False'
+        verbose_name_plural = 'Questions True/False'
+        ordering = ['id']
+        db_table = 'quiz"."true_false_question'
+
+    def __str__(self):
+        return f"Вопрос {self.id} для квиза {self.quiz.id}"

@@ -6,7 +6,7 @@ from quiz.serializers.quizzes import QuizListSerializer, QuizDetailSerializer
 from quiz.filters.quizzes import QuizFilter
 
 class QuizListPagination(PageNumberPagination):
-    page_size = 5
+    page_size = 6
     page_size_query_param = 'page_size'
     max_page_size = 20
 

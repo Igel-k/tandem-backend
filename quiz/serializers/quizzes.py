@@ -32,9 +32,11 @@ class QuizListSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
 
+    questions_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Quiz
-        fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'description', 'tags')
+        fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'description', 'tags', 'questions_count')
 
     def get_title(self, obj):
         return {
@@ -50,6 +52,10 @@ class QuizListSerializer(serializers.ModelSerializer):
 
     def get_tags(self, obj):
         return [tag.name for tag in obj.tags.all()]
+
+    def get_questions_count(self, obj):
+        questions = obj.get_questions()
+        return questions.count() if questions is not None else 0
 
 
 class SingleChoiceQuestionSerializer(serializers.ModelSerializer):
@@ -126,7 +132,7 @@ class QuizDetailSerializer(QuizListSerializer):
     questions = serializers.SerializerMethodField()
 
     class Meta(QuizListSerializer.Meta):
-        fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'tags', 'questions')
+        fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'tags', 'questions_count', 'questions')
 
     def get_questions(self, obj):
         questions = obj.get_questions()

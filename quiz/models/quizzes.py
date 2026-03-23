@@ -23,6 +23,20 @@ class Quiz(models.Model):
     def __str__(self):
         return f"Квиз {self.id} - {self.title_ru}"
 
+    def get_questions(self):
+        quiz_type_name = self.quiz_type.name.strip().lower().replace("_", " ")
+        
+        if quiz_type_name == 'code completion':
+            return self.code_completion_questions.all()
+        elif quiz_type_name == 'async sorter':
+            return self.async_sorter_questions.all()
+        elif quiz_type_name == 'single choice':
+            return self.single_choice_questions.all()
+        elif quiz_type_name == 'true false':
+            return self.true_false_questions.all()
+            
+        return None
+
 
 class CodeCompletionQuestion(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='code_completion_questions', verbose_name='Quiz')

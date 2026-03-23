@@ -129,22 +129,20 @@ class QuizDetailSerializer(QuizListSerializer):
         fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'tags', 'questions')
 
     def get_questions(self, obj):
+        questions = obj.get_questions()
+        
+        if not questions:
+            return []
+
         quiz_type_name = obj.quiz_type.name.strip().lower().replace("_", " ")
         
         if quiz_type_name == 'code completion':
-            questions = obj.code_completion_questions.all()
             return CodeCompletionQuestionSerializer(questions, many=True).data
-            
         elif quiz_type_name == 'async sorter':
-            questions = obj.async_sorter_questions.all()
             return AsyncSorterQuestionSerializer(questions, many=True).data
-
         elif quiz_type_name == 'single choice':
-            questions = obj.single_choice_questions.all()
             return SingleChoiceQuestionSerializer(questions, many=True).data
-            
         elif quiz_type_name == 'true false':
-            questions = obj.true_false_questions.all()
             return TrueFalseQuestionSerializer(questions, many=True).data
             
         return []

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from quiz.models.quizzes import Quiz, CodeCompletionQuestion, AsyncSorterQuestion, SingleChoiceQuestion, TrueFalseQuestion 
+from quiz.models.interactions import QuizResult
 
 class CodeCompletionQuestionSerializer(serializers.ModelSerializer):
     hint = serializers.SerializerMethodField()
@@ -33,10 +34,13 @@ class QuizListSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
 
     questions_count = serializers.SerializerMethodField()
+    user_progress = serializers.SerializerMethodField()
 
     class Meta:
         model = Quiz
-        fields = ('id', 'type', 'difficulty', 'section', 'time_limit', 'title', 'description', 'tags', 'questions_count')
+        fields = ('id', 'type', 'difficulty', 'section', 
+        'time_limit', 'title', 'description', 'tags', 
+        'questions_count', 'user_progress')
 
     def get_title(self, obj):
         return {
@@ -56,6 +60,28 @@ class QuizListSerializer(serializers.ModelSerializer):
     def get_questions_count(self, obj):
         questions = obj.get_questions()
         return questions.count() if questions is not None else 0
+
+    def get_user_progress(self, obj):
+        request = self.context.get('request')
+        
+        if request and request.user.is_authenticated:
+            user_results = QuizResult.objects.filter(user=request.user, quiz=obj)
+            latest_result = user_results.first()
+            
+            if latest_result:
+                best_result = user_results.order_by('-score').first()
+
+                return {
+                    "is_completed": True,
+                    "latest_score": float(latest_result.score),
+                    "best_result": float(best_result.score)
+                }
+
+        return {
+            "is_completed": False,
+            "latest_score": None,
+            "best_result": None
+        }
 
 
 class SingleChoiceQuestionSerializer(serializers.ModelSerializer):

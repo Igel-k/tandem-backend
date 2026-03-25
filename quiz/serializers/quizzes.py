@@ -111,7 +111,7 @@ class TrueFalseQuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TrueFalseQuestion
-        fields = ('id', 'statement', 'explanation')
+        fields = ('id', 'statement', 'explanation', 'correct_answer')
 
     def get_statement(self, obj):
         return {

@@ -135,9 +135,11 @@ class TrueFalseQuestionSerializer(serializers.ModelSerializer):
     statement = serializers.SerializerMethodField()
     explanation = serializers.SerializerMethodField()
 
+    correct = serializers.BooleanField(source="correct_answer")
+
     class Meta:
         model = TrueFalseQuestion
-        fields = ('id', 'statement', 'explanation', 'correct_answer')
+        fields = ('id', 'statement', 'explanation', 'correct')
 
     def get_statement(self, obj):
         return {

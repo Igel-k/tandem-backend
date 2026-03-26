@@ -17,3 +17,19 @@ class QuizResult(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.quiz.title_ru} ({self.score}%)"
+
+
+class FavoriteQuiz(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorite_quizzes', verbose_name='User')
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='favorited_by', verbose_name='Quiz')
+    
+    added_at = models.DateTimeField(auto_now_add=True, verbose_name='Adding date')
+
+    class Meta:
+        verbose_name = 'Favorite quiz'
+        verbose_name_plural = 'Favorites quizzes'
+        db_table = 'quiz"."favorite_quiz'
+        unique_together = ('user', 'quiz') 
+
+    def __str__(self):
+        return f"{self.user} -> {self.quiz.title_ru}"

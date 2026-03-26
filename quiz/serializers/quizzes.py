@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from quiz.models.quizzes import Quiz, CodeCompletionQuestion, AsyncSorterQuestion, SingleChoiceQuestion, TrueFalseQuestion 
-from quiz.models.interactions import QuizResult
+from quiz.models.interactions import QuizResult, FavoriteQuiz
 
 class CodeCompletionQuestionSerializer(serializers.ModelSerializer):
     hint = serializers.SerializerMethodField()
@@ -35,12 +35,13 @@ class QuizListSerializer(serializers.ModelSerializer):
 
     questions_count = serializers.SerializerMethodField()
     user_progress = serializers.SerializerMethodField()
+    is_favorite = serializers.SerializerMethodField()
 
     class Meta:
         model = Quiz
         fields = ('id', 'type', 'difficulty', 'section', 
         'time_limit', 'title', 'description', 'tags', 
-        'questions_count', 'user_progress')
+        'questions_count', 'user_progress', 'is_favorite')
 
     def get_title(self, obj):
         return {
@@ -82,6 +83,14 @@ class QuizListSerializer(serializers.ModelSerializer):
             "latest_score": None,
             "best_result": None
         }
+
+    def get_is_favorite(self, obj):
+        request = self.context.get('request')
+        
+        if request and request.user.is_authenticated:
+            return FavoriteQuiz.objects.filter(user=request.user, quiz=obj).exists()
+            
+        return False
 
 
 class SingleChoiceQuestionSerializer(serializers.ModelSerializer):

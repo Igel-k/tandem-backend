@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from quiz.models.quizzes import Quiz, CodeCompletionQuestion, AsyncSorterQuestion, SingleChoiceQuestion, TrueFalseQuestion 
+import random
+from quiz.models.quizzes import *
 from quiz.models.interactions import QuizResult, FavoriteQuiz
 
 class CodeCompletionQuestionSerializer(serializers.ModelSerializer):
@@ -165,6 +166,33 @@ class TrueFalseQuestionSerializer(serializers.ModelSerializer):
         }
 
 
+class CodeOrderingQuestionSerializer(serializers.ModelSerializer):
+    text = serializers.SerializerMethodField()
+    lines = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CodeOrderingQuestion
+        fields = ('id', 'text', 'lines')
+
+    def get_text(self, obj):
+        return {
+            'ru': obj.text_ru,
+            'en': obj.text_en
+        }
+
+    def get_lines(self, obj):
+        safe_lines = []
+        for line in obj.code_lines:
+            safe_lines.append({
+                "id": line["id"],
+                "code": line["code"],
+                "indent": line["indent"]
+            })
+            
+        random.shuffle(safe_lines)
+        return safe_lines
+
+
 class QuizDetailSerializer(QuizListSerializer):
     questions = serializers.SerializerMethodField()
 
@@ -187,5 +215,7 @@ class QuizDetailSerializer(QuizListSerializer):
             return SingleChoiceQuestionSerializer(questions, many=True).data
         elif quiz_type_name == 'true false':
             return TrueFalseQuestionSerializer(questions, many=True).data
+        elif quiz_type_name == 'code ordering':
+            return CodeOrderingQuestionSerializer(questions, many=True).data
             
         return []

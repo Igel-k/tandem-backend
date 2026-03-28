@@ -34,6 +34,8 @@ class Quiz(models.Model):
             return self.single_choice_questions.all()
         elif quiz_type_name == 'true false':
             return self.true_false_questions.all()
+        elif quiz_type_name == 'code ordering':
+            return self.code_ordering_questions.all()
             
         return None
 
@@ -130,6 +132,24 @@ class TrueFalseQuestion(models.Model):
         verbose_name_plural = 'Questions True/False'
         ordering = ['id']
         db_table = 'quiz"."true_false_question'
+
+    def __str__(self):
+        return f"Вопрос {self.id} для квиза {self.quiz.id}"
+
+
+class CodeOrderingQuestion(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='code_ordering_questions', verbose_name='Quiz')
+    
+    text_ru = models.TextField(verbose_name='Task (RU)')
+    text_en = models.TextField(verbose_name='Task (EN)')
+    
+    code_lines = models.JSONField(verbose_name='Code lines')
+
+    class Meta:
+        verbose_name = 'Question Code ordering'
+        verbose_name_plural = 'Questions Code ordering'
+        ordering = ['id']
+        db_table = 'quiz"."code_ordering_question'
 
     def __str__(self):
         return f"Вопрос {self.id} для квиза {self.quiz.id}"

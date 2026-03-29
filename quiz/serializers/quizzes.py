@@ -76,13 +76,15 @@ class QuizListSerializer(serializers.ModelSerializer):
                 return {
                     "is_completed": True,
                     "latest_score": float(latest_result.score),
-                    "best_result": float(best_result.score)
+                    "best_result": float(best_result.score),
+                    "is_perfect": best_score >= 70
                 }
 
         return {
             "is_completed": False,
             "latest_score": None,
-            "best_result": None
+            "best_result": None,
+            "is_perfect": False
         }
 
     def get_is_favorite(self, obj):

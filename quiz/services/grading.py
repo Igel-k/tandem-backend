@@ -25,6 +25,12 @@ def calculate_quiz_score(quiz, answers_list):
         elif quiz_type_name == 'true false':
             correct_answer = question.correct_answer
             is_correct = (str(user_answer).lower() == str(correct_answer).lower()) if user_answer is not None else False
+
+        elif quiz_type_name == 'code ordering':
+            lines = question.code_lines
+            sorted_lines = sorted(lines, key=lambda x: x.get('correctPosition', 0))
+            correct_answer = [line['id'] for line in sorted_lines]
+            is_correct = (user_answer == correct_answer) if isinstance(user_answer, list) else False
             
         else:
             correct_answer = question.correct_answer

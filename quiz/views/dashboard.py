@@ -14,7 +14,7 @@ class UserDashboardView(APIView):
         total_tests = Quiz.objects.count()
         total_attempts = QuizResult.objects.filter(user=user).count()
 
-        completed_tests_ids = set(QuizResult.objects.filter(user=user).values_list('quiz_id', flat=True))
+        completed_tests_ids = set(QuizResult.objects.filter(user=user, score__gte=70).values_list('quiz_id', flat=True))
         completed_tests = len(completed_tests_ids)
         remain_tests = total_tests - completed_tests
 

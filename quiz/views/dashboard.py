@@ -25,7 +25,7 @@ class UserDashboardView(APIView):
             "remainTests": remain_tests
         }
 
-        sections_data = Quiz.objects.values('section__name').annotate(total=Count('id'))
+        sections_data = Quiz.objects.values('section__name').annotate(total=Count('id')).order_by('section__name')
         
         section_progress = []
         for sec in sections_data:
@@ -43,7 +43,7 @@ class UserDashboardView(APIView):
             })
 
 
-        difficulty_data = Quiz.objects.values('difficulty__level').annotate(total=Count('id'))
+        difficulty_data = Quiz.objects.values('difficulty__level').annotate(total=Count('id')).order_by('difficulty__level')
         
         difficulty_progress = []
         for diff in difficulty_data:

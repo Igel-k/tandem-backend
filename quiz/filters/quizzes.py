@@ -1,5 +1,6 @@
 import django_filters
 from quiz.models.quizzes import Quiz
+from quiz.models.interactions import QuizResult
 
 class QuizFilter(django_filters.FilterSet):
     difficulty = django_filters.NumberFilter(field_name='difficulty__level')

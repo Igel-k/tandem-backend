@@ -27,10 +27,15 @@ class QuizFilter(django_filters.FilterSet):
         user = getattr(self, 'request', None) and self.request.user
         
         if user and user.is_authenticated:
+            perfect_quiz_ids = QuizResult.objects.filter(
+                user=user, 
+                score__gte=70
+            ).values_list('quiz_id', flat=True)
+            
             if value is True:
-                return queryset.filter(results__user=user, results__score__gte=70).distinct()
+                return queryset.filter(id__in=perfect_quiz_ids)
             elif value is False:
-                return queryset.exclude(results__user=user, results__score__gte=70)
+                return queryset.exclude(id__in=perfect_quiz_ids)
                 
         if value is True:
             return queryset.none()
